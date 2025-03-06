@@ -1,13 +1,13 @@
-use std::fmt;
-use serde::Serialize;
 use crate::flags::{get_configuration, Flags};
+use crate::output::Output;
 use crate::protocols::river_status_unstable::v1::zriver_output_status_v1::ZriverOutputStatusV1;
 use crate::protocols::river_status_unstable::v1::zriver_output_status_v1::Event::{FocusedTags,LayoutName,LayoutNameClear,UrgentTags,ViewTags};
 use crate::protocols::river_status_unstable::v1::zriver_seat_status_v1::ZriverSeatStatusV1;
 use crate::protocols::river_status_unstable::v1::zriver_seat_status_v1::Event::{FocusedOutput, FocusedView, Mode};
 use crate::protocols::river_status_unstable::v1::zriver_status_manager_v1::ZriverStatusManagerV1;
-use crate::output::Output;
 use crate::seat::Seat;
+use serde::Serialize;
+use std::fmt;
 use wayland_client::{Connection, Dispatch, Proxy, QueueHandle};
 use wayland_client::backend::ObjectId;
 use wayland_client::protocol::wl_output;
@@ -100,7 +100,6 @@ impl Dispatch<WlRegistry, ()> for State {
         version,
       } = event
       {
-        
         match &interface[..] {
           "zriver_status_manager_v1" => {
             state.status_manager = Some(proxy.bind::<ZriverStatusManagerV1,_, Self>(

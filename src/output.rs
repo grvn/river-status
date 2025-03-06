@@ -1,7 +1,7 @@
 // output as in displays|screens|monitors
 use crate::protocols::river_status_unstable::v1::zriver_output_status_v1::ZriverOutputStatusV1;
-use wayland_client::protocol::wl_output::WlOutput;
 use serde::Serialize;
+use wayland_client::protocol::wl_output::WlOutput;
 
 #[derive(Serialize)]
 pub struct Output {

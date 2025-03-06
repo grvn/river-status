@@ -3,24 +3,23 @@ name = "river-status"
 version = "0.1.0"
 edition = "2024"
 authors = ["Rickard Hedlund <@>"]
-#license = "MIT"
-# description = "A tool"
-# readme = "README.md"
-#homepage = ""
-#repository = ""
+license = "GPT-3.0"
+description = "A client for retrieving status information from [river](https://github.com/ifreund/river)"
+readme = "README.md"
+homepage = "https://github.com/grvn/river-status/wiki"
+repository = "https://github.com/grvn/river-status"
 keywords = ["cli","river"]
 categories = ["command-line-utilities"]
 build = "build.rs"
 
 [profile.release]
+codegen-units = 1 # Allow for maximum size reduction optimizations, but longer compile time.
+lto = true # This can remove dead code and often times reduces binary size.
+opt-level = "z"  # Optimize for size.
 panic = "abort"
 strip = true # Automatically strip symbols from the binary.
-opt-level = "z"  # Optimize for size.
-lto = true # This can remove dead code and often times reduces binary size.
-codegen-units = 1 # Allow for maximum size reduction optimizations, but longer compile time.
 
 [dependencies]
-# wayland-commons = "0.29.5"
 wayland-client = "0.31.8"
 wayland-protocols = "0.32.6"
 wayland-scanner = "0.31.6"

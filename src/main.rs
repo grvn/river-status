@@ -1,6 +1,6 @@
+use river_status::client::State;
 use std::process::ExitCode;
 use wayland_client::{Connection, EventQueue};
-use river_status::client::State;
 
 fn main() -> ExitCode {
   let conn = Connection::connect_to_env().expect("Failed to connect to the Wayland server!");
@@ -39,5 +39,6 @@ fn main() -> ExitCode {
   }
 
   state.destroy();
+  // TODO: Handle return code
   return ExitCode::SUCCESS;
 }

@@ -1,5 +1,6 @@
-use std::{fs::{OpenOptions,File}, process::{Command, Stdio}, path::Path};
-
+use std::fs::{OpenOptions,File};
+use std::path::Path;
+use std::process::{Command, Stdio};
 
 pub fn main() {
   // Use https://git.sr.ht/~sircmpwn/scdoc to generate docs
@@ -18,15 +19,3 @@ pub fn main() {
     Err(_) => {}
   }
 }
-
-// fn generate(protocol: &str) {
-//   let out_dir = Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "/src/protocol/"));
-//   let mut protocol_dir = env!("CARGO_MANIFEST_DIR").to_string();
-//   protocol_dir.push_str("/protocol/");
-//   protocol_dir.push_str(protocol);
-//   protocol_dir.push_str(".xml");
-
-//   wayland_scanner::generate_client_code!("");
-// }
-
-//Path::new(&protocol_dir)

@@ -7,9 +7,9 @@ USAGE:
   river-status [FLAGS] [OPTIONS]
 
 FLAGS:
-  -h, --help            Prints help information
-  -a, --all             Equivalent of -f -l --tag -t -u --view-tags
+  -a, --all             Equivalent of -f -l -t --tag -u --view-tags
   -f, --focused         Prints if a view is focused
+  -h, --help            Prints help information and exit
   -l, --layout          Prints layout name
       --tag             Prints the focused tag
   -t, --title           Prints the focused view title
@@ -22,7 +22,6 @@ OPTIONS:
   -s --seat STRING      Select a specific seat
 ";
 
-// 
 #[derive(Debug)]
 pub struct Flags {
   pub continuously: bool,
