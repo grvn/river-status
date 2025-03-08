@@ -1,4 +1,4 @@
-# A status information client for [river](https://github.com/ifreund/river)
+# A status information client for [river](https://github.com/riverwm/river)
 
 This client is designed to be used with [yambar](https://codeberg.org/dnkl/yambar) or [eww](https://github.com/elkowar/eww) or any other thing that could benefit from status information about tags, windows etc. from river.
 
@@ -7,8 +7,9 @@ This client is designed to be used with [yambar](https://codeberg.org/dnkl/yamba
 ### Dependencies
 - rust
 
+> *__NOTE__*: This repo uses [river/protocol](https://github.com/riverwm/river/tree/master/protocol) as a submodule.
 ```shell
-git clone git@github.com:grvn/river-status.git
+git clone --recursive git@github.com:grvn/river-status.git
 cd river-status
 cargo build --release
 ```
