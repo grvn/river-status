@@ -12,9 +12,9 @@ pub struct Seat {
 impl Seat {
   pub fn new(name: String, wlseat: WlSeat) -> Self {
     Self {
-      name: name,
+      name,
       status: None,
-      wlseat: wlseat,
+      wlseat,
     }
   }
 }

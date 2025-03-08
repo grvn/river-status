@@ -22,7 +22,7 @@ OPTIONS:
   -s --seat STRING      Select a specific seat
 ";
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Flags {
   pub continuously: bool,
   pub focused: bool,
@@ -38,7 +38,7 @@ pub struct Flags {
 }
 
 // Set the default values for Flags
-impl Default for Flags {
+impl Flags {
   fn default() -> Flags {
     Flags {
       continuously: false,

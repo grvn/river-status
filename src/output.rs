@@ -25,11 +25,11 @@ impl Output {
     Self {
       focused: None,
       focused_tags: None,
-      name: name,
+      name,
       occupied_tags: vec![],
       status: None,
       urgent_tags: None,
-      wloutput: wloutput,
+      wloutput,
     }
   }
 }
