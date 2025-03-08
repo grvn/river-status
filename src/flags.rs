@@ -57,7 +57,7 @@ impl Flags {
 }
 
 pub fn get_configuration() -> Flags {
-  let mut default= Flags::default();
+  let mut default = Flags::default();
   let mut args = env::args().skip(1);
 
   while let Some(arg) = args.next() {

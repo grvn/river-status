@@ -1,7 +1,7 @@
-use std::{env, fs};
 use std::io::{Error, Write};
 use std::path::PathBuf;
-use std::process::{exit, Command, Stdio};
+use std::process::{Command, Stdio, exit};
+use std::{env, fs};
 
 fn main() -> Result<(), Error> {
   println!("cargo:rerun-if-changed=doc");
@@ -16,7 +16,7 @@ fn main() -> Result<(), Error> {
 
   if Command::new("scdoc").spawn().is_err() {
     eprintln!("scdoc not found in PATH, skipping generating manpages from doc/");
-		return Ok(());
+    return Ok(());
   }
 
   let doc_dir = PathBuf::from(target_dir).join("doc");
