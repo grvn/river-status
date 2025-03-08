@@ -35,20 +35,6 @@ pub struct State {
 }
 
 impl State {
-  pub fn new() -> Self {
-    let flags = get_configuration();
-    Self {
-      flags,
-      layout: None,
-      mode: None,
-      outputs: vec![],
-      seat: None,
-      status_manager: None,
-      title: None,
-      updated: false,
-    }
-  }
-
   pub fn get_output(&mut self, id: &ObjectId) -> Option<&mut Output> {
     self.outputs.iter_mut().find(|output| output.wloutput.id() == *id)
   }
@@ -62,6 +48,22 @@ impl State {
       if let Some(status) = &output.status {
         status.destroy();
       }
+    }
+  }
+}
+
+impl Default for State {
+  fn default() -> Self {
+    let flags = get_configuration();
+    Self {
+      flags,
+      layout: None,
+      mode: None,
+      outputs: vec![],
+      seat: None,
+      status_manager: None,
+      title: None,
+      updated: false,
     }
   }
 }
@@ -90,8 +92,8 @@ impl Dispatch<WlRegistry, ()> for State {
     state: &mut Self,
     proxy: &WlRegistry,
     event: <WlRegistry as wayland_client::Proxy>::Event,
-    _data: &(),
-    _conn: &Connection,
+    _: &(),
+    _: &Connection,
     qhandle: &QueueHandle<Self>,
   ) {
       if let Event::Global {
@@ -124,11 +126,11 @@ impl Dispatch<WlRegistry, ()> for State {
 impl Dispatch<ZriverOutputStatusV1, ObjectId> for State {
   fn event(
       state: &mut Self,
-      _proxy: &ZriverOutputStatusV1,
+      _: &ZriverOutputStatusV1,
       event: <ZriverOutputStatusV1 as wayland_client::Proxy>::Event,
       id: &ObjectId,
-      _conn: &Connection,
-      _qhandle: &QueueHandle<Self>,
+      _: &Connection,
+      _: &QueueHandle<Self>,
   ) {
       match event {
         FocusedTags { tags } => {
@@ -147,12 +149,10 @@ impl Dispatch<ZriverOutputStatusV1, ObjectId> for State {
         }
         LayoutNameClear => state.layout = None,
         UrgentTags { tags } => {
-          if tags != 0 {
-            if state.flags.urgent {
-              if let Some(output) = state.get_output(id) {
-                output.urgent_tags = Some(tags);
-                state.updated = true;
-              }
+          if tags != 0 && state.flags.urgent {
+            if let Some(output) = state.get_output(id) {
+              output.urgent_tags = Some(tags);
+              state.updated = true;
             }
           }
         }
@@ -183,15 +183,18 @@ impl Dispatch<wl_output::WlOutput, ()> for State {
           state: &mut Self,
           proxy: &wl_output::WlOutput,
           event: <wl_output::WlOutput as wayland_client::Proxy>::Event,
-          _data: &(),
-          _conn: &Connection,
+          _: &(),
+          _: &Connection,
           qhandle: &QueueHandle<Self>,
       ) {
       if let wl_output::Event::Name { name } = event {
-        if state.flags.output.is_none() || state.flags.output.as_ref().unwrap().eq(&name) {
+        if match state.flags.output.as_ref() {
+          Some(output) => {output.eq(&name)}
+          None => {true}
+        } {
           let mut output = Output::new(name, proxy.to_owned());
           if let Some(status_mgr) = &state.status_manager {
-            output.status = Some(status_mgr.get_river_output_status(&proxy, qhandle, proxy.id()));
+            output.status = Some(status_mgr.get_river_output_status(proxy, qhandle, proxy.id()));
           }
           state.outputs.push(output);
         }
@@ -201,12 +204,12 @@ impl Dispatch<wl_output::WlOutput, ()> for State {
 
 impl Dispatch<ZriverStatusManagerV1, ()> for State {
   fn event(
-          _state: &mut Self,
-          _proxy: &ZriverStatusManagerV1,
-          _event: <ZriverStatusManagerV1 as wayland_client::Proxy>::Event,
-          _data: &(),
-          _conn: &Connection,
-          _qhandle: &QueueHandle<Self>,
+          _: &mut Self,
+          _: &ZriverStatusManagerV1,
+          _: <ZriverStatusManagerV1 as wayland_client::Proxy>::Event,
+          _: &(),
+          _: &Connection,
+          _: &QueueHandle<Self>,
       ) {
   }
 }
@@ -216,12 +219,15 @@ impl Dispatch<wl_seat::WlSeat, ()> for State {
     state: &mut Self,
     proxy: &wl_seat::WlSeat,
     event: <wl_seat::WlSeat as Proxy>::Event,
-    _data: &(),
-    _conn: &Connection,
+    _: &(),
+    _: &Connection,
     qhandle: &QueueHandle<Self>,
   ) {
     if let wl_seat::Event::Name { name } = event {
-      if state.flags.seat.is_none() || state.flags.seat.as_ref().unwrap().eq(&name){
+      if match state.flags.seat.as_ref() {
+        Some(seat) => {seat.eq(&name)}
+        None => {true}
+      } {
         let mut seat = Seat::new(name, proxy.to_owned());
         if let Some(status_mgr) = &state.status_manager {
           seat.status = Some(status_mgr.get_river_seat_status(proxy, qhandle, ()));
@@ -235,11 +241,11 @@ impl Dispatch<wl_seat::WlSeat, ()> for State {
 impl Dispatch<ZriverSeatStatusV1, ()> for State {
   fn event(
     state: &mut Self,
-    _proxy: &ZriverSeatStatusV1,
+    _: &ZriverSeatStatusV1,
     event: <ZriverSeatStatusV1 as Proxy>::Event,
-    _data: &(),
-    _conn: &Connection,
-    _qhandle: &QueueHandle<Self>,
+    _: &(),
+    _: &Connection,
+    _: &QueueHandle<Self>,
   ) {
     match event {
       FocusedOutput { output } => {
