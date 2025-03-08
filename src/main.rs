@@ -1,15 +1,14 @@
 use river_status::client::State;
-use std::process::ExitCode;
 use wayland_client::{Connection, EventQueue};
 
-fn main() -> ExitCode {
+fn main() {
   let conn = Connection::connect_to_env().expect("Failed to connect to the Wayland server!");
   let display = conn.display();
   let mut event_queue: EventQueue<State> = conn.new_event_queue();
   let qh = event_queue.handle();
   let _registry = display.get_registry(&qh, ());
 
-  let mut state = State::new();
+  let mut state = State::default();
 
   loop {
     match event_queue.roundtrip(&mut state) {
@@ -32,13 +31,11 @@ fn main() -> ExitCode {
       Ok(_) => {} // TODO: fix error handling
       Err(_) => {}
     }
-    if state.updated == true {
+    if state.updated {
       println!("{}", state);
       state.updated = false;
     }
   }
 
   state.destroy();
-  // TODO: Handle return code
-  return ExitCode::SUCCESS;
 }
