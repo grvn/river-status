@@ -7,10 +7,11 @@ USAGE:
   river-status [FLAGS] [OPTIONS]
 
 FLAGS:
-  -a, --all             Equivalent of -f -l -t --tag -u --view-tags
+  -a, --all             Equivalent of -f -l -m -t --tag -u --view-tags
   -f, --focused         Prints if a view is focused
   -h, --help            Prints help information and exit
   -l, --layout          Prints layout name
+  -m, --mode            Prints layout name
       --no-output       Explicitly remove all outputs from print
       --no-seat         Explicitly remove seat from print
       --tag             Prints the focused tag
@@ -75,6 +76,7 @@ pub fn get_configuration() -> Flags {
       "-a" | "--all" => {
         default.focused = true;
         default.layout = true;
+        default.mode = true;
         default.tags = true;
         default.title = true;
         default.urgent = true;
@@ -84,6 +86,7 @@ pub fn get_configuration() -> Flags {
       "-l" | "--layout" => default.layout = true,
       "--no-output" => default.no_output = true,
       "--no-seat" => default.no_seat = true,
+      "-m" | "--mode" => default.mode = true,
       "-o" | "--output" => default.output = args.next(),
       "-p" | "--pretty" => default.pretty = true,
       "-q" | "--quiet" => println!("Quiet mode is not supported yet."),
