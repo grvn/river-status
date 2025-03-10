@@ -1,5 +1,6 @@
 use once_cell::sync::Lazy;
 use std::env;
+use std::process::exit;
 
 const HELP: &str = "\
 river-status
@@ -8,23 +9,24 @@ USAGE:
   river-status [FLAGS] [OPTIONS]
 
 FLAGS:
-  -a, --all             Equivalent of -f -l -m -t --tag -u --view-tags
-  -f, --focused         Prints if a view is focused
-  -h, --help            Prints help information and exit
-  -l, --layout          Prints layout name
-  -m, --mode            Prints layout name
-      --no-output       Explicitly remove all outputs from print
-      --no-seat         Explicitly remove seat from print
-      --tag             Prints the focused tag
-  -p, --pretty          Pretty print the output JSON
-  -t, --title           Prints the focused view title
-  -u, --urgent          Prints urgent tags
-      --view-tags       Prints the tags of all views
-  -w, --watch           Continuously prints information as it changes
+  -a,   --all             Equivalent of -f -l -m -t --tag -u --view-tags
+  -f,   --focused         Prints if a view is focused
+  -h,   --help            Prints help information and exit
+  -l,   --layout          Prints layout name
+  -m,   --mode            Prints mode name
+        --no-output       Explicitly remove all outputs from print
+        --no-seat         Explicitly remove seat from print
+  -p,   --pretty          Pretty print the output JSON
+  -T,   --tag             Prints the focused tag
+  -t,   --title           Prints the focused view title
+  -u,   --urgent          Prints urgent tags
+  -vt,  --view-tags       Prints the tags of all views
+  -V,   --version         Prints the version of river-status and exit
+  -w,   --watch           Continuously prints information as it changes
 
 OPTIONS:
-  -o --output STRING    Select a specific output
-  -s --seat STRING      Select a specific seat
+  -o    --output STRING   Select a specific output
+  -s    --seat STRING     Select a specific seat
 ";
 
 pub static CONFIG: Lazy<Flags> = Lazy::new(get_configuration);
@@ -74,8 +76,8 @@ fn get_configuration() -> Flags {
   while let Some(arg) = args.next() {
     match &arg[..] {
       "-h" | "--help" => {
-        print!("{}", HELP);
-        std::process::exit(0);
+        println!("{}", HELP);
+        exit(0);
       }
       "-a" | "--all" => {
         default.focused = true;
@@ -93,14 +95,23 @@ fn get_configuration() -> Flags {
       "-m" | "--mode" => default.mode = true,
       "-o" | "--output" => default.output = args.next(),
       "-p" | "--pretty" => default.pretty = true,
-      "-q" | "--quiet" => println!("Quiet mode is not supported yet."),
+      "-q" | "--quiet" => {
+        println!("Quiet mode is not supported yet.");
+        exit(0)
+      }
       "-s" | "--seat" => default.seat = args.next(),
-      "--tag" => default.tags = true,
+      "-T" | "--tag" => default.tags = true,
       "-t" | "--title" => default.title = true,
       "-u" | "--urgent" => default.urgent = true,
-      "-v" | "--verbose" => println!("Verbose mode is not supported yet."),
-      "--version" => println!("Version info is not supported yet."),
-      "--view-tags" => default.view = true,
+      "-v" | "--verbose" => {
+        println!("Verbose mode is not supported yet.");
+        exit(0)
+      }
+      "-V" | "--version" => {
+        println!("{}", env!("CARGO_PKG_VERSION"));
+        exit(0)
+      }
+      "-vt" | "--view-tags" => default.view = true,
       "-w" | "--watch" => default.continuously = true,
       _ => {
         if arg.starts_with('-') {

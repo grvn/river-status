@@ -19,6 +19,11 @@ opt-level = "z"  # Optimize for size.
 panic = "abort"
 strip = true # Automatically strip symbols from the binary.
 
+[build-dependencies]
+clap = "4.5.31"
+clap_complete = "4.5.46"
+clap_mangen = "0.2.26"
+
 [dependencies]
 once_cell = "1.20.3"
 serde = { version = "1.0.218", features = ["derive"] }
