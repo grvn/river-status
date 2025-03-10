@@ -4,6 +4,8 @@
 
 - add options `--no-seat` and `--no-output`
 - standardize output to camelCase
+- added forgotten option `--mode`
+- move layout to be a part of output
 
 ## v0.1.0 (2025-03-01)
 **If anyone uses this, all constructive feedback is useful.**
