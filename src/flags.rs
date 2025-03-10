@@ -1,3 +1,4 @@
+use once_cell::sync::Lazy;
 use std::env;
 
 const HELP: &str = "\
@@ -24,6 +25,8 @@ OPTIONS:
   -o --output STRING    Select a specific output
   -s --seat STRING      Select a specific seat
 ";
+
+pub static CONFIG: Lazy<Flags> = Lazy::new(get_configuration);
 
 #[derive(Debug, Default)]
 pub struct Flags {
@@ -63,7 +66,7 @@ impl Flags {
   }
 }
 
-pub fn get_configuration() -> Flags {
+fn get_configuration() -> Flags {
   let mut default = Flags::default();
   let mut args = env::args().skip(1);
 

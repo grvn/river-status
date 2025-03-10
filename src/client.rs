@@ -1,4 +1,4 @@
-use crate::flags::{get_configuration, Flags};
+use crate::flags::CONFIG;
 use crate::output::Output;
 use crate::protocols::river_status_unstable::v1::zriver_output_status_v1::Event::{
   FocusedTags, LayoutName, LayoutNameClear, UrgentTags, ViewTags,
@@ -11,6 +11,7 @@ use crate::protocols::river_status_unstable::v1::zriver_seat_status_v1::ZriverSe
 use crate::protocols::river_status_unstable::v1::zriver_status_manager_v1::ZriverStatusManagerV1;
 use crate::seat::Seat;
 use serde::Serialize;
+use serde_with::skip_serializing_none;
 use std::fmt;
 use wayland_client::backend::ObjectId;
 use wayland_client::protocol::wl_output;
@@ -18,25 +19,28 @@ use wayland_client::protocol::wl_registry::{Event, WlRegistry};
 use wayland_client::protocol::wl_seat;
 use wayland_client::{Connection, Dispatch, Proxy, QueueHandle};
 
+#[skip_serializing_none]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct State {
-  #[serde(skip)]
-  pub flags: Flags,
-  #[serde(skip_serializing_if = "Option::is_none")]
-  pub layout: Option<String>,
-  #[serde(skip_serializing_if = "Option::is_none")]
   pub mode: Option<String>,
-  #[serde(skip_serializing_if = "Vec::is_empty")]
+  #[serde(skip_serializing_if = "no_output")]
   pub outputs: Vec<Output>,
-  #[serde(skip_serializing_if = "Option::is_none")]
+  #[serde(skip_serializing_if = "no_seat")]
   pub seat: Option<Seat>,
   #[serde(skip)]
   pub status_manager: Option<ZriverStatusManagerV1>,
-  #[serde(skip_serializing_if = "Option::is_none")]
   pub title: Option<String>,
   #[serde(skip)]
   pub updated: bool,
+}
+
+fn no_output<T>(_: &T) -> bool {
+  CONFIG.no_output
+}
+
+fn no_seat<T>(_: &T) -> bool {
+  CONFIG.no_seat
 }
 
 impl State {
@@ -59,15 +63,12 @@ impl State {
 
 impl Default for State {
   fn default() -> Self {
-    let flags = get_configuration();
     Self {
-      flags,
-      layout: None,
-      mode: None,
+      mode: CONFIG.mode.then(String::new),
       outputs: vec![],
       seat: None,
       status_manager: None,
-      title: None,
+      title: CONFIG.title.then(String::new),
       updated: false,
     }
   }
@@ -75,7 +76,7 @@ impl Default for State {
 
 impl fmt::Display for State {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    if self.flags.pretty {
+    if CONFIG.pretty {
       let json = match serde_json::to_string_pretty(self) {
         Ok(json) => json,
         Err(_) => String::from("{}"),
@@ -129,22 +130,25 @@ impl Dispatch<ZriverOutputStatusV1, ObjectId> for State {
   ) {
     match event {
       FocusedTags { tags } => {
-        if state.flags.tags {
-          if let Some(output) = state.get_output(id) {
-            output.focused_tags = Some(tags.trailing_zeros() + 1); // convert to 1-based index
-            state.updated = true;
-          }
-        }
-      }
-      LayoutName { name } => {
-        if state.flags.layout {
-          state.layout = Some(name);
+        if let Some(output) = state.get_output(id) {
+          output.focused_tags = Some(tags.trailing_zeros() + 1); // convert to 1-based index
           state.updated = true;
         }
       }
-      LayoutNameClear => state.layout = None,
+      LayoutName { name } => {
+        if let Some(output) = state.get_output(id) {
+          output.layout = Some(name);
+          state.updated = true;
+        }
+      }
+      LayoutNameClear => {
+        if let Some(output) = state.get_output(id) {
+          output.layout = None;
+          state.updated = true;
+        }
+      }
       UrgentTags { tags } => {
-        if tags != 0 && state.flags.urgent {
+        if tags != 0 {
           if let Some(output) = state.get_output(id) {
             output.urgent_tags = Some(tags);
             state.updated = true;
@@ -152,24 +156,22 @@ impl Dispatch<ZriverOutputStatusV1, ObjectId> for State {
         }
       }
       ViewTags { tags } => {
-        if state.flags.view {
-          if let Some(output) = state.get_output(id) {
-            let tags: Vec<u32> = tags[0..]
-              .chunks(4)
-              .map(|s| {
-                let buf = [s[0], s[1], s[2], s[3]];
-                let tagmask = u32::from_le_bytes(buf);
-                for i in 0..32 {
-                  if 1 << i == tagmask {
-                    return 1 + i;
-                  }
+        if let Some(output) = state.get_output(id) {
+          let tags: Vec<u32> = tags[0..]
+            .chunks(4)
+            .map(|s| {
+              let buf = [s[0], s[1], s[2], s[3]];
+              let tagmask = u32::from_le_bytes(buf);
+              for i in 0..32 {
+                if 1 << i == tagmask {
+                  return 1 + i;
                 }
-                0
-              })
-              .collect();
-            output.occupied_tags = tags;
-            state.updated = true;
-          }
+              }
+              0
+            })
+            .collect();
+          output.occupied_tags = tags;
+          state.updated = true;
         }
       }
     }
@@ -186,7 +188,7 @@ impl Dispatch<wl_output::WlOutput, ()> for State {
     qhandle: &QueueHandle<Self>,
   ) {
     if let wl_output::Event::Name { name } = event {
-      if match state.flags.output.as_ref() {
+      if match CONFIG.output.as_ref() {
         Some(output) => output.eq(&name),
         None => true,
       } {
@@ -222,7 +224,7 @@ impl Dispatch<wl_seat::WlSeat, ()> for State {
     qhandle: &QueueHandle<Self>,
   ) {
     if let wl_seat::Event::Name { name } = event {
-      if match state.flags.seat.as_ref() {
+      if match CONFIG.seat.as_ref() {
         Some(seat) => seat.eq(&name),
         None => true,
       } {
@@ -247,21 +249,19 @@ impl Dispatch<ZriverSeatStatusV1, ()> for State {
   ) {
     match event {
       FocusedOutput { output } => {
-        if state.flags.focused {
-          if let Some(output) = state.get_output(&output.id()) {
-            output.focused = true;
-            state.updated = true;
-          }
+        if let Some(output) = state.get_output(&output.id()) {
+          output.focused = true;
+          state.updated = true;
         }
       }
       FocusedView { title } => {
-        if state.flags.title {
+        if state.title.is_some() {
           state.title = Some(title);
           state.updated = true;
         }
       }
       Mode { name } => {
-        if state.flags.mode {
+        if state.mode.is_some() {
           state.mode = Some(name);
           state.updated = true;
         }

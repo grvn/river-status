@@ -1,4 +1,5 @@
 use river_status::client::State;
+use river_status::flags::CONFIG;
 use wayland_client::{Connection, EventQueue};
 
 fn main() {
@@ -26,7 +27,8 @@ fn main() {
 
   println!("{}", state);
 
-  while state.flags.continuously {
+  #[allow(clippy::while_immutable_condition)]
+  while CONFIG.continuously {
     match event_queue.blocking_dispatch(&mut state) {
       Ok(_) => {} // TODO: fix error handling
       Err(_) => {}
