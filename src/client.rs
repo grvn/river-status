@@ -18,7 +18,7 @@ use wayland_client::protocol::wl_registry::{Event, WlRegistry};
 use wayland_client::protocol::wl_seat;
 use wayland_client::{Connection, Dispatch, Proxy, QueueHandle};
 
-#[derive(Serialize)]
+#[derive(Default,Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct State {
   #[serde(skip_serializing_if = "no_mode")]
@@ -38,7 +38,7 @@ pub struct State {
 fn no_mode<T>(s: &Option<T>) -> bool {
   s.is_none() || !CONFIG.mode
 }
-fn no_output<T>(v: &Vec<T>) -> bool {
+fn no_output<T>(v: &[T]) -> bool {
   v.is_empty() || CONFIG.no_output
 }
 fn no_seat<T>(s: &Option<T>) -> bool {
@@ -66,18 +66,18 @@ impl State {
   }
 }
 
-impl Default for State {
-  fn default() -> Self {
-    Self {
-      mode: None,
-      outputs: vec![],
-      seat: None,
-      status_manager: None,
-      title: None,
-      updated: false,
-    }
-  }
-}
+// impl Default for State {
+//   fn default() -> Self {
+//     Self {
+//       mode: None,
+//       outputs: vec![],
+//       seat: None,
+//       status_manager: None,
+//       title: None,
+//       updated: false,
+//     }
+//   }
+// }
 
 impl fmt::Display for State {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

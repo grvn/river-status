@@ -1,4 +1,5 @@
 // output as in displays|screens|monitors
+#![allow(clippy::trivially_copy_pass_by_ref)]
 use crate::flags::CONFIG;
 use crate::protocols::river_status_unstable::v1::zriver_output_status_v1::ZriverOutputStatusV1;
 use serde::Serialize;
@@ -36,7 +37,7 @@ fn no_layout<T>(s: &Option<T>) -> bool {
   s.is_none() || !CONFIG.layout
 }
 
-fn no_occupied_tags<T>(v: &Vec<T>) -> bool {
+fn no_occupied_tags<T>(v: &[T]) -> bool {
   v.is_empty() || !CONFIG.view
 }
 
