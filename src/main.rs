@@ -1,9 +1,20 @@
 use river_status::client::State;
 use river_status::flags::CONFIG;
-use wayland_client::{Connection, EventQueue};
+use std::process::exit;
+use wayland_client::{ConnectError, Connection, EventQueue};
 
 fn main() {
-  let conn = Connection::connect_to_env().expect("Failed to connect to the Wayland server!");
+  let Ok(conn) = Connection::connect_to_env().map_err(|e| match e {
+    ConnectError::NoCompositor => {
+      eprintln!("{e}, make sure you are running river-status from a wayland desktop environment.");
+      exit(1);
+    }
+    _ => {
+      eprintln!("{e}");
+      exit(1)
+    }
+  });
+
   let display = conn.display();
   let mut event_queue: EventQueue<State> = conn.new_event_queue();
   let qh = event_queue.handle();

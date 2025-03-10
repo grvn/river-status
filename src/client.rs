@@ -18,7 +18,7 @@ use wayland_client::protocol::wl_registry::{Event, WlRegistry};
 use wayland_client::protocol::wl_seat;
 use wayland_client::{Connection, Dispatch, Proxy, QueueHandle};
 
-#[derive(Default,Serialize)]
+#[derive(Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct State {
   #[serde(skip_serializing_if = "no_mode")]
