@@ -16,6 +16,7 @@ FLAGS:
       --no-output       Explicitly remove all outputs from print
       --no-seat         Explicitly remove seat from print
       --tag             Prints the focused tag
+  -p, --pretty          Pretty print the output JSON
   -t, --title           Prints the focused view title
   -u, --urgent          Prints urgent tags
       --view-tags       Prints the tags of all views
