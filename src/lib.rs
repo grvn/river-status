@@ -2,7 +2,6 @@
 #![deny(clippy::panic)]
 #![deny(clippy::unwrap_used)]
 #![deny(unused_must_use)]
-
 #![deny(clippy::await_holding_lock)]
 #![deny(clippy::needless_pass_by_value)]
 #![deny(clippy::todo)]
