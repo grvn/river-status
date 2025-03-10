@@ -3,6 +3,7 @@ use serde::Serialize;
 use wayland_client::protocol::wl_seat::WlSeat;
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Seat {
   pub name: String,
   #[serde(skip)]

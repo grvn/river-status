@@ -1,4 +1,4 @@
-use crate::flags::{Flags, get_configuration};
+use crate::flags::{get_configuration, Flags};
 use crate::output::Output;
 use crate::protocols::river_status_unstable::v1::zriver_output_status_v1::Event::{
   FocusedTags, LayoutName, LayoutNameClear, UrgentTags, ViewTags,
@@ -19,6 +19,7 @@ use wayland_client::protocol::wl_seat;
 use wayland_client::{Connection, Dispatch, Proxy, QueueHandle};
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct State {
   #[serde(skip)]
   pub flags: Flags,
@@ -248,7 +249,7 @@ impl Dispatch<ZriverSeatStatusV1, ()> for State {
       FocusedOutput { output } => {
         if state.flags.focused {
           if let Some(output) = state.get_output(&output.id()) {
-            output.focused = Some(true);
+            output.focused = true;
             state.updated = true;
           }
         }

@@ -4,9 +4,9 @@ use serde::Serialize;
 use wayland_client::protocol::wl_output::WlOutput;
 
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Output {
-  #[serde(skip_serializing_if = "Option::is_none")]
-  pub focused: Option<bool>,
+  pub focused: bool,
   #[serde(skip_serializing_if = "Option::is_none")]
   pub focused_tags: Option<u32>,
   pub name: String,
@@ -23,7 +23,7 @@ pub struct Output {
 impl Output {
   pub fn new(name: String, wloutput: WlOutput) -> Self {
     Self {
-      focused: None,
+      focused: false,
       focused_tags: None,
       name,
       occupied_tags: vec![],
