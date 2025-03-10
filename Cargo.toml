@@ -20,7 +20,7 @@ panic = "abort"
 strip = true # Automatically strip symbols from the binary.
 
 [build-dependencies]
-clap = "4.5.31"
+clap = { version = "4.5.31", default-features = false, features = ["help", "cargo"]}
 clap_complete = "4.5.46"
 clap_mangen = "0.2.26"
 

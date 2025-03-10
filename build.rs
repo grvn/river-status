@@ -1,3 +1,4 @@
+use clap::{crate_authors,crate_version};
 use clap_complete::generate_to;
 use clap_complete::shells::{Bash, Elvish, Fish, PowerShell, Zsh};
 use clap_mangen::Man;
@@ -7,7 +8,7 @@ use std::process::exit;
 use std::{env, fs};
 
 fn main() -> Result<(), Error> {
-  println!("cargo:rerun-if-changed=doc");
+  println!("cargo::rerun-if-changed=build.rs");
 
   let target_dir = match env::var_os("OUT_DIR") {
     Some(target_dir) => target_dir,
@@ -22,7 +23,7 @@ fn main() -> Result<(), Error> {
 
   let app_name = "river-status";
 
-  let mut cmd = clap::Command::new("river-status")
+  let mut cmd = clap::Command::new(app_name)
   .about("A status information client for river")
   .arg(clap::arg!(-a --all "Equivalent of -f -l -m -t --tag -u --view-tags"))
   .arg(clap::arg!(-f --focused "Print information about the focused tags"))
@@ -38,7 +39,7 @@ fn main() -> Result<(), Error> {
   .arg(clap::arg!(-u --urgent "Print information about urgent tags if there are any."))
   .arg(clap::arg!(--"view-tags" "Prints the tags of all views."))
   .arg(clap::arg!(-w --watch "Continuously print information as it changes."))
-  .author("Rickard Hedlund, <@>")
+  .author(crate_authors!("\n"))
   .long_about("river-status is a CLI tool that displays information about running instancies of river.
 The output is always in JSON, but you can select to have it pretty printed for human readablility.
 
@@ -46,7 +47,7 @@ By default, it will display the names of each output and the current seat river 
 
 NOTE: this tool uses the `river-status-unstable-v1` protocol which might be subject to significant breaking changes before river sees a stable 1.0 release.
 ")
-  .version(env!("CARGO_PKG_VERSION"))
+  .version(crate_version!())
   ;
 
   generate_to(Bash, &mut cmd, app_name, "completions/bash")?;
