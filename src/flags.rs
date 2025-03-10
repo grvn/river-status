@@ -11,6 +11,8 @@ FLAGS:
   -f, --focused         Prints if a view is focused
   -h, --help            Prints help information and exit
   -l, --layout          Prints layout name
+      --no-output       Explicitly remove all outputs from print
+      --no-seat         Explicitly remove seat from print
       --tag             Prints the focused tag
   -t, --title           Prints the focused view title
   -u, --urgent          Prints urgent tags
@@ -28,6 +30,8 @@ pub struct Flags {
   pub focused: bool,
   pub layout: bool,
   pub mode: bool,
+  pub no_output: bool,
+  pub no_seat: bool,
   pub output: Option<String>,
   pub pretty: bool,
   pub seat: Option<String>,
@@ -45,6 +49,8 @@ impl Flags {
       focused: false,
       layout: false,
       mode: false,
+      no_output: false,
+      no_seat: false,
       output: None,
       pretty: false,
       seat: None,
@@ -76,6 +82,8 @@ pub fn get_configuration() -> Flags {
       }
       "-f" | "--focused" => default.focused = true,
       "-l" | "--layout" => default.layout = true,
+      "--no-output" => default.no_output = true,
+      "--no-seat" => default.no_seat = true,
       "-o" | "--output" => default.output = args.next(),
       "-p" | "--pretty" => default.pretty = true,
       "-q" | "--quiet" => println!("Quiet mode is not supported yet."),
