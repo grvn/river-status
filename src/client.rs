@@ -11,7 +11,6 @@ use crate::protocols::river_status_unstable::v1::zriver_seat_status_v1::ZriverSe
 use crate::protocols::river_status_unstable::v1::zriver_status_manager_v1::ZriverStatusManagerV1;
 use crate::seat::Seat;
 use serde::Serialize;
-use serde_with::skip_serializing_none;
 use std::fmt;
 use wayland_client::backend::ObjectId;
 use wayland_client::protocol::wl_output;
@@ -19,10 +18,10 @@ use wayland_client::protocol::wl_registry::{Event, WlRegistry};
 use wayland_client::protocol::wl_seat;
 use wayland_client::{Connection, Dispatch, Proxy, QueueHandle};
 
-#[skip_serializing_none]
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct State {
+  #[serde(skip_serializing_if = "no_mode")]
   pub mode: Option<String>,
   #[serde(skip_serializing_if = "no_output")]
   pub outputs: Vec<Output>,
@@ -30,17 +29,23 @@ pub struct State {
   pub seat: Option<Seat>,
   #[serde(skip)]
   pub status_manager: Option<ZriverStatusManagerV1>,
+  #[serde(skip_serializing_if = "no_title")]
   pub title: Option<String>,
   #[serde(skip)]
   pub updated: bool,
 }
 
-fn no_output<T>(_: &T) -> bool {
-  CONFIG.no_output
+fn no_mode<T>(s: &Option<T>) -> bool {
+  s.is_none() || !CONFIG.mode
 }
-
-fn no_seat<T>(_: &T) -> bool {
-  CONFIG.no_seat
+fn no_output<T>(v: &Vec<T>) -> bool {
+  v.is_empty() || CONFIG.no_output
+}
+fn no_seat<T>(s: &Option<T>) -> bool {
+  s.is_none() || CONFIG.no_seat
+}
+fn no_title<T>(s: &Option<T>) -> bool {
+  s.is_none() || !CONFIG.title
 }
 
 impl State {
@@ -64,11 +69,11 @@ impl State {
 impl Default for State {
   fn default() -> Self {
     Self {
-      mode: CONFIG.mode.then(String::new),
+      mode: None,
       outputs: vec![],
       seat: None,
       status_manager: None,
-      title: CONFIG.title.then(String::new),
+      title: None,
       updated: false,
     }
   }
@@ -255,16 +260,12 @@ impl Dispatch<ZriverSeatStatusV1, ()> for State {
         }
       }
       FocusedView { title } => {
-        if state.title.is_some() {
-          state.title = Some(title);
-          state.updated = true;
-        }
+        state.title = Some(title);
+        state.updated = true;
       }
       Mode { name } => {
-        if state.mode.is_some() {
-          state.mode = Some(name);
-          state.updated = true;
-        }
+        state.mode = Some(name);
+        state.updated = true;
       }
       _ => {}
     }
