@@ -45,7 +45,6 @@ jobs:
     needs:
       - build
     runs-on: ubuntu-latest
-    working-directory: ${{ github.workspace }}
     env:
       CHECKSUM_FILE: ${{ github.ref_name }}.tar.gz.sha256
       GH_TOKEN: ${{ github.token }}
@@ -53,6 +52,7 @@ jobs:
       - name: Tarball url
         run: echo "${{ github.server_url }}/${{ github.repository }}/archive/refs/tags/${{ github.ref_name }}.tar.gz"
       - name: Create tarball sha256
+        working-directory: ${{ github.workspace }}
         run: |
           gh release download ${{ github.ref_name }} --archive=tar.gz --output release.tgz
           SHA256=$( sha256sum ./release.tgz | cut -d ' ' -f1 )
@@ -60,6 +60,7 @@ jobs:
           printf "%s" ${SHA256} > "${CHECKSUM_FILE}"
       - name: write checksum
         uses: softprops/action-gh-release@v2
+        working-directory: ${{ github.workspace }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         files: |
