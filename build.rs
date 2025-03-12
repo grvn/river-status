@@ -1,4 +1,4 @@
-use clap::{crate_authors,crate_version};
+use clap::{crate_authors, crate_version};
 use clap_complete::generate_to;
 use clap_complete::shells::{Bash, Elvish, Fish, PowerShell, Zsh};
 use clap_mangen::Man;
