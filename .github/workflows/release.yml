@@ -67,7 +67,7 @@ jobs:
           # git clone --no-checkout --filter=blob:none  https://github.com/riverwm/river.git river
           # git submodule add https://github.com/riverwm/river.git river
           git submodule absorbgitdirs
-          git -C sub config core.sparseCheckout true
+          git -C river config core.sparseCheckout true
           echo '/protocol/' >>.git/modules/river/info/sparse-checkout
           git submodule update --init --force --checkout river
           mkdir -p archive
