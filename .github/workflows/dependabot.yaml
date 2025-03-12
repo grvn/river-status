@@ -1,0 +1,20 @@
+version: 2
+updates:
+  # Cargo
+  - package-ecosystem: "cargo"
+    commit-message:
+      prefix: ":arrow_up: [dependabot] "
+    directory: "/"
+    groups:
+      security-updates:
+        applies-to: security-updates
+        patterns:
+        - "*"
+        update-types:
+        - "patch"
+        - "minor"
+    open-pull-requests-limit: 0
+    reviewers:
+      - "grvn"
+    schedule:
+      interval: "daily"
