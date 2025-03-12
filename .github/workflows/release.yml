@@ -1,0 +1,38 @@
+name: Release
+run-name: ${{ github.actor }} is publishing release ${{ github.ref_name }}
+
+# permissions:
+#   contents: write
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Release
+        uses: softprops/action-gh-release@v2
+  checksums:
+    name: sha256
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tarball url
+        run: echo "${{ github.server_url }}/${{ github.repository }}/archive/refs/tags/${{ github.ref_name }}.tar.gz"
+      - name: Create tarball sha256 
+        run: |
+          gh release download ${{ github.ref_name }} --archive=tar.gz --output release.tgz
+          SHA256=$( sha256sum ./release.tgz | cut -d ' ' -f1 )
+          [[ ! ${SHA256} =~ ^[a-z0-9]+$ ]] && printf "could not calculate sha256\n" && exit 1
+          checksums_file="${{ github.ref_name }}.tar.gz.sha256"
+          printf "%s" ${SHA256} > "${checksums_file}""
+          gh release upload "${{ github.ref_name }}" "${checksums_file}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
