@@ -17,11 +17,6 @@ env:
   ZIP_FILE: "river-status-${{ github.ref_name }}.zip"
   ZIP_CHECKSUM_FILE: "river-status-${{ github.ref_name }}.zip.sha256"
 
-# inputs:
-#   github_token:
-#     description: "GitHub token for authentication"
-#     required: true
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -73,32 +68,10 @@ jobs:
 
       - name: create the archives
         run: |
-          ls -la
-          ls -la river
-          # ls -la .git
-          # ls -la .git/modules
-          # ls -la .git/modules/river
-          # ls -la .git/modules/river/info
-          # git clone --no-checkout --filter=blob:none  https://github.com/riverwm/river.git river
-          # git submodule add https://github.com/riverwm/river.git river
-          # git submodule absorbgitdirs
-          # git -C river config core.sparseCheckout true
-          # echo '/protocol/' >>.git/modules/river/info/sparse-checkout
-          # git submodule update --init --force --checkout river
           mkdir -p archive
           tar --exclude="archive" --exclude=".git" --exclude=".github" -czvf archive/${TAR_FILE} .
-          zip -r archive/${ZIP_FILE} . -x "archive/*" -x ".git/*" -x ".github/*"
+          zip -r archive/${ZIP_FILE} . -x "archive/*" -x ".git/*" -x ".github/*" -x "river/.git/*"
           mv archive/* .
-
-      # - name: Release
-      #   uses: softprops/action-gh-release@v2
-      #   env:
-      #     GITHUB_TOKEN: ${{ inputs.github-token }}
-      #   with:
-      #     tag_name: ${{ env.RELEASE_VERSION }}
-      #     name: Release ${{ github.ref }}
-      #     draft: false
-      #     prerelease: false
 
       - name: generate tar.gz checksums
         run: |
