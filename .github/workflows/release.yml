@@ -12,7 +12,7 @@ concurrency:
 
 env:
   FORCE_COLOR: "1"
-  CHECKSUM_FILE: "${{ github.ref_name }}.tar.gz.sha256sum"
+  CHECKSUM_FILE: "river-status-${{ github.ref_name }}.tar.gz.sha256"
 
 # inputs:
 #   github_token:
@@ -56,7 +56,7 @@ jobs:
         with:
           tag_name: ${{ env.RELEASE_VERSION }}
           files: |
-            ${{ github.workspace }}/*.sha256sum
+            ${{ github.workspace }}/*.sha256
           name: Release ${{ github.ref }}
           draft: false
           prerelease: false
