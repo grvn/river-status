@@ -60,7 +60,6 @@ jobs:
           printf "%s" ${SHA256} > "${CHECKSUM_FILE}"
       - name: write checksum
         uses: softprops/action-gh-release@v2
-        working-directory: ${{ github.workspace }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
