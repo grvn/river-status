@@ -11,20 +11,33 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
+env:
+  FORCE_COLOR: "1"
+
+# inputs:
+#   github_token:
+#     description: "GitHub token for authentication"
+#     required: true
+
 jobs:
   build:
-    env:
-      GH_TOKEN: ${{ github.token }}
     permissions:
       contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Release
         uses: softprops/action-gh-release@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ inputs.github-token }}
+        with:
+          tag_name: ${{ github.ref }}
+          name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
   checksums:
     name: sha256
     permissions:
@@ -49,4 +62,10 @@ jobs:
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        files: ${{ github.workspace }}/${CHECKSUM_FILE}
+        files: |
+          ${{ github.workspace }}/${CHECKSUM_FILE}
+        with:
+          tag_name: ${{ github.ref }}
+          name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
