@@ -1,9 +1,6 @@
 name: Release
 run-name: ${{ github.actor }} is publishing release ${{ github.ref_name }}
 
-permissions:
-  contents: write
-
 on:
   push:
     tags:
@@ -16,6 +13,10 @@ concurrency:
 
 jobs:
   build:
+    env:
+      GH_TOKEN: ${{ github.token }}
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,12 +27,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   checksums:
     name: sha256
+    permissions:
+      contents: write
     needs:
       - build
     runs-on: ubuntu-latest
     working-directory: ${{ github.workspace }}
     env:
       CHECKSUM_FILE: ${{ github.ref_name }}.tar.gz.sha256
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: Tarball url
         run: echo "${{ github.server_url }}/${{ github.repository }}/archive/refs/tags/${{ github.ref_name }}.tar.gz"
