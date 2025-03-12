@@ -40,19 +40,6 @@ jobs:
           name: Release ${{ github.ref }}
           draft: false
           prerelease: false
-  checksums:
-    name: sha256
-    permissions:
-      contents: write
-    needs:
-      - build
-    runs-on: ubuntu-latest
-    env:
-      CHECKSUM_FILE: ${{ github.ref_name }}.tar.gz.sha256
-      GH_TOKEN: ${{ github.token }}
-    steps:
-      - name: Tarball url
-        run: echo "${{ github.server_url }}/${{ github.repository }}/archive/refs/tags/${{ github.ref_name }}.tar.gz"
       - name: Create tarball sha256
         working-directory: ${{ github.workspace }}
         run: |
