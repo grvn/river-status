@@ -1,14 +1,15 @@
 name: Release
 run-name: ${{ github.actor }} is publishing release ${{ github.ref_name }}
 
-# permissions:
-#   contents: write
-
 on:
   push:
     tags:
       - "v*.*.*"
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -23,6 +24,8 @@ jobs:
     needs:
       - build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Tarball url
         run: echo "${{ github.server_url }}/${{ github.repository }}/archive/refs/tags/${{ github.ref_name }}.tar.gz"
