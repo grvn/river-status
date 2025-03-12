@@ -46,9 +46,10 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: |
           gh release download ${{ github.ref_name }} --archive=tar.gz --output release.tgz
-          SHA256=$( sha256sum ./release.tgz | cut -d ' ' -f1 )
+          CONTENT=$( sha256sum ./release.tgz )
+          SHA256=$( printf "%s" ${CONTENT} | cut -d ' ' -f1 )
           [[ ! ${SHA256} =~ ^[a-z0-9]+$ ]] && printf "could not calculate sha256\n" && exit 1
-          printf "%s" ${SHA256} > "${CHECKSUM_FILE}"
+          printf "%s" ${CONTENT} > "${CHECKSUM_FILE}"
       - name: write checksum
         uses: softprops/action-gh-release@v2
         env:
