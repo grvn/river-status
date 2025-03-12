@@ -12,6 +12,7 @@ concurrency:
 
 env:
   FORCE_COLOR: "1"
+  CHECKSUM_FILE: "${{ github.ref_name }}.tar.gz.sha256"
 
 # inputs:
 #   github_token:
