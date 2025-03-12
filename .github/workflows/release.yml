@@ -34,7 +34,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ inputs.github-token }}
         with:
-          tag_name: ${{ github.ref }}
           name: Release ${{ github.ref }}
           draft: false
           prerelease: false
@@ -65,7 +64,6 @@ jobs:
         with:
           files: |
             ${{ github.workspace }}/${CHECKSUM_FILE}
-          tag_name: ${{ github.ref }}
           name: Release ${{ github.ref }}
           draft: false
           prerelease: false
