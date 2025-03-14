@@ -2,8 +2,9 @@ use crate::protocols::river_status_unstable::v1::zriver_seat_status_v1::ZriverSe
 use serde::Serialize;
 use wayland_client::protocol::wl_seat::WlSeat;
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[non_exhaustive]
 pub struct Seat {
   pub name: String,
   #[serde(skip)]
@@ -13,7 +14,8 @@ pub struct Seat {
 }
 
 impl Seat {
-  pub fn new(name: String, wlseat: WlSeat) -> Self {
+  #[must_use]
+  pub const fn new(name: String, wlseat: WlSeat) -> Self {
     Self { name, status: None, wlseat }
   }
 }

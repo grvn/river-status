@@ -1,29 +1,28 @@
-use clap::{crate_authors, crate_version};
+#![allow(missing_docs, reason = "I ignore docs. right now")]
+#![allow(clippy::cognitive_complexity, reason = "I do not think this has high complexity right now")]
+#![allow(clippy::print_stderr, reason = "I like using stdout and stderr")]
+#![allow(unused_results, reason = "I do not care about the result for generating completions")]
+
+//! # Build crate
+//!
+//! This crate creates documentation and shell completions
+
+use clap::{Command, crate_authors, crate_version};
+use clap_complete::Shell::{Bash, Elvish, Fish, PowerShell, Zsh};
 use clap_complete::generate_to;
-use clap_complete::shells::{Bash, Elvish, Fish, PowerShell, Zsh};
 use clap_mangen::Man;
-use std::io::Error;
+use core::error::Error;
 use std::path::PathBuf;
-use std::process::exit;
 use std::{env, fs};
 
-fn main() -> Result<(), Error> {
+///The name of the binary
+static APP_NAME: &str = "river-status";
+
+/// Create the docs and shell completions
+fn main() {
   println!("cargo::rerun-if-changed=build.rs");
 
-  let target_dir = match env::var_os("OUT_DIR") {
-    Some(target_dir) => target_dir,
-    None => {
-      eprintln!("OUT_DIR environment variable not defined.");
-      exit(1);
-    }
-  };
-
-  let man_dir = PathBuf::from(target_dir).join("man");
-  fs::create_dir_all(&man_dir)?;
-
-  let app_name = "river-status";
-
-  let mut cmd = clap::Command::new(app_name)
+  let cmd = Command::new(APP_NAME)
   .about("A status information client for river")
   .arg(clap::arg!(-a --all "Equivalent of -f -l -m -t --tag -u --view-tags"))
   .arg(clap::arg!(-f --focused "Print information about the focused tags"))
@@ -34,6 +33,7 @@ fn main() -> Result<(), Error> {
   .arg(clap::arg!(-o --output <OUTPUT> "Select the output to display information about."))
   .arg(clap::arg!(-p --pretty "Pretty print JSON."))
   .arg(clap::arg!(-s --seat <SEAT> "Select the seat to display information about."))
+  .arg(clap::arg!(--"sleep" "optional delay (in milliseconds) between calls to river for status updates. This option is a no-op without `--watch`."))
   .arg(clap::arg!(-T --tag "Output the key *focusedTags* and numerical value representing which tag is focused for each output."))
   .arg(clap::arg!(-t --title "Print the title of the focused view."))
   .arg(clap::arg!(-u --urgent "Print information about urgent tags if there are any."))
@@ -50,16 +50,30 @@ NOTE: this tool uses the `river-status-unstable-v1` protocol which might be subj
   .version(crate_version!())
   ;
 
-  generate_to(Bash, &mut cmd, app_name, "completions/bash")?;
-  generate_to(Elvish, &mut cmd, app_name, "completions/elvish")?;
-  generate_to(Fish, &mut cmd, app_name, "completions/fish")?;
-  generate_to(PowerShell, &mut cmd, app_name, "completions/powershell")?;
-  generate_to(Zsh, &mut cmd, app_name, "completions/zsh")?;
+  if let Err(e) = generate_man_pages(cmd.clone()) {
+    println!("cargo::warning=Error generating man pages: {e}");
+  }
+  if let Err(e) = generate_shell_completions(cmd) {
+    println!("cargo::warning=Error generating shell completions: {e}");
+  }
+}
 
-  let man = Man::new(cmd);
-  let mut buffer: Vec<u8> = Default::default();
-  man.render(&mut buffer)?;
-  std::fs::write(man_dir.join("river-status.1"), buffer)?;
+/// generates the man pages
+fn generate_man_pages(cmd: Command) -> Result<(), Box<dyn Error>> {
+  let man_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("man");
+  let mut buffer = Vec::<u8>::new();
+  Man::new(cmd).render(&mut buffer)?;
+  fs::create_dir_all(&man_dir)?;
+  fs::write(man_dir.join(APP_NAME.to_owned() + ".1"), buffer)?;
+  Ok(())
+}
 
+/// generates the shell completions
+fn generate_shell_completions(mut cmd: Command) -> Result<(), Box<dyn Error>> {
+  let cmp_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("completions");
+  fs::create_dir_all(&cmp_dir)?;
+  for shell in [(Bash, "bash"), (Elvish, "elvish"), (Fish, "fish"), (PowerShell, "powershell"), (Zsh, "zsh")] {
+    generate_to(shell.0, &mut cmd, APP_NAME, cmp_dir.join(shell.1))?;
+  }
   Ok(())
 }

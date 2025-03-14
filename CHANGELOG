@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.2 (2025-03-14)
+
+- add option `--sleep` as a way to limit number of calls per second to river for status updates
+- apply code linting standards from https://github.com/dotfive/standards-rs#code-linting
+
 ## v0.1.1 (2025-03-10)
 
 - add options `--no-seat` and `--no-output`

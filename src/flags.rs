@@ -1,7 +1,11 @@
+#![allow(clippy::print_stderr, reason = "This is a cli tool")]
+#![allow(clippy::print_stdout, reason = "This is a cli tool")]
+#![allow(clippy::struct_excessive_bools, reason = "The bools represent things that need to be separate")]
 use once_cell::sync::Lazy;
 use std::env;
-use std::process::exit;
+use std::process::ExitCode;
 
+/// Help text to print if -h or --help is args
 const HELP: &str = "\
 river-status
 
@@ -22,18 +26,21 @@ FLAGS:
   -u,   --urgent          Prints urgent tags
   -vt,  --view-tags       Prints the tags of all views
   -V,   --version         Prints the version of river-status and exit
-  -w,   --watch           Continuously prints information as it changes
+  -w,   --watch           Continuously prints information as it changes.
 
 OPTIONS:
   -o    --output STRING   Select a specific output
   -s    --seat STRING     Select a specific seat
+        --sleep STRING    delay (in milliseconds) between calls to river for status updates. This option is a no-op without `--watch`.
 ";
 
-pub static CONFIG: Lazy<Flags> = Lazy::new(get_configuration);
+pub static CONFIG: Lazy<Flags> = Lazy::new(new);
 
 #[derive(Debug, Default)]
+#[non_exhaustive]
 pub struct Flags {
   pub continuously: bool,
+  pub exitcode: Option<ExitCode>,
   pub focused: bool,
   pub layout: bool,
   pub mode: bool,
@@ -42,43 +49,24 @@ pub struct Flags {
   pub output: Option<String>,
   pub pretty: bool,
   pub seat: Option<String>,
+  pub sleep: Option<u64>,
   pub tags: bool,
   pub title: bool,
   pub urgent: bool,
   pub view: bool,
 }
 
-// Set the default values for Flags
-impl Flags {
-  fn default() -> Flags {
-    Flags {
-      continuously: false,
-      focused: false,
-      layout: false,
-      mode: false,
-      no_output: false,
-      no_seat: false,
-      output: None,
-      pretty: false,
-      seat: None,
-      tags: false,
-      title: false,
-      urgent: false,
-      view: false,
-    }
-  }
-}
-
-fn get_configuration() -> Flags {
+///Instanciates an instance of Flags
+fn new() -> Flags {
   let mut default = Flags::default();
   let mut args = env::args().skip(1);
 
   while let Some(arg) = args.next() {
-    match &arg[..] {
+    match &*arg {
       "-h" | "--help" => {
-        println!("{}", HELP);
-        exit(0);
-      }
+        println!("{HELP}");
+        default.exitcode = Some(ExitCode::SUCCESS);
+      },
       "-a" | "--all" => {
         default.focused = true;
         default.layout = true;
@@ -87,7 +75,7 @@ fn get_configuration() -> Flags {
         default.title = true;
         default.urgent = true;
         default.view = true;
-      }
+      },
       "-f" | "--focused" => default.focused = true,
       "-l" | "--layout" => default.layout = true,
       "--no-output" => default.no_output = true,
@@ -97,29 +85,37 @@ fn get_configuration() -> Flags {
       "-p" | "--pretty" => default.pretty = true,
       "-q" | "--quiet" => {
         println!("Quiet mode is not supported yet.");
-        exit(0)
-      }
+        default.exitcode = Some(ExitCode::SUCCESS);
+      },
       "-s" | "--seat" => default.seat = args.next(),
+      "--sleep" => {
+        if let Some(time) = args.next() {
+          match time.parse::<u64>() {
+            Ok(i) => default.sleep = Some(i),
+            Err(_) => eprintln!("--sleep, faulty value, ignoring option."),
+          }
+        }
+      },
       "-T" | "--tag" => default.tags = true,
       "-t" | "--title" => default.title = true,
       "-u" | "--urgent" => default.urgent = true,
       "-v" | "--verbose" => {
         println!("Verbose mode is not supported yet.");
-        exit(0)
-      }
+        default.exitcode = Some(ExitCode::SUCCESS);
+      },
       "-V" | "--version" => {
         println!("{}", env!("CARGO_PKG_VERSION"));
-        exit(0)
-      }
+        default.exitcode = Some(ExitCode::SUCCESS);
+      },
       "-vt" | "--view-tags" => default.view = true,
       "-w" | "--watch" => default.continuously = true,
       _ => {
         if arg.starts_with('-') {
-          println!("Unkown argument {}", arg);
+          println!("Unkown argument {arg}");
         } else {
-          println!("Unkown positional argument {}", arg);
+          println!("Unkown positional argument {arg}");
         }
-      }
+      },
     }
   }
   default

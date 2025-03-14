@@ -12,8 +12,7 @@ pub mod river_status_unstable {
     }
 
     use self::__interfaces::{
-      ZRIVER_OUTPUT_STATUS_V1_INTERFACE, ZRIVER_SEAT_STATUS_V1_INTERFACE,
-      ZRIVER_STATUS_MANAGER_V1_INTERFACE,
+      ZRIVER_OUTPUT_STATUS_V1_INTERFACE, ZRIVER_SEAT_STATUS_V1_INTERFACE, ZRIVER_STATUS_MANAGER_V1_INTERFACE,
     };
     wayland_scanner::generate_client_code!("./river/protocol/river-status-unstable-v1.xml");
   }

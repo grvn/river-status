@@ -37,6 +37,7 @@ Register-ArgumentCompleter -Native -CommandName 'river-status' -ScriptBlock {
             [CompletionResult]::new('--no-seat', '--no-seat', [CompletionResultType]::ParameterName, 'Force information about all seats to be omitted from the output.')
             [CompletionResult]::new('-p', '-p', [CompletionResultType]::ParameterName, 'Pretty print JSON.')
             [CompletionResult]::new('--pretty', '--pretty', [CompletionResultType]::ParameterName, 'Pretty print JSON.')
+            [CompletionResult]::new('--sleep', '--sleep', [CompletionResultType]::ParameterName, 'optional delay (in milliseconds) between calls to river for status updates. This option is a no-op without `--watch`.')
             [CompletionResult]::new('-T', '-T ', [CompletionResultType]::ParameterName, 'Output the key *focusedTags* and numerical value representing which tag is focused for each output.')
             [CompletionResult]::new('--tag', '--tag', [CompletionResultType]::ParameterName, 'Output the key *focusedTags* and numerical value representing which tag is focused for each output.')
             [CompletionResult]::new('-t', '-t', [CompletionResultType]::ParameterName, 'Print the title of the focused view.')

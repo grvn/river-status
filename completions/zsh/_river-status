@@ -31,6 +31,7 @@ _river-status() {
 '--no-seat[Force information about all seats to be omitted from the output.]' \
 '-p[Pretty print JSON.]' \
 '--pretty[Pretty print JSON.]' \
+'--sleep[optional delay (in milliseconds) between calls to river for status updates. This option is a no-op without \`--watch\`.]' \
 '-T[Output the key *focusedTags* and numerical value representing which tag is focused for each output.]' \
 '--tag[Output the key *focusedTags* and numerical value representing which tag is focused for each output.]' \
 '-t[Print the title of the focused view.]' \

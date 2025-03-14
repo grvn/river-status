@@ -1,10 +1,10 @@
 .ie \n(.g .ds Aq \(aq
 .el .ds Aq '
-.TH river-status 1  "river-status 0.1.0" 
+.TH river-status 1  "river-status 0.1.2" 
 .SH NAME
 river\-status \- A status information client for river
 .SH SYNOPSIS
-\fBriver\-status\fR [\fB\-a\fR|\fB\-\-all\fR] [\fB\-f\fR|\fB\-\-focused\fR] [\fB\-l\fR|\fB\-\-layout\fR] [\fB\-m\fR|\fB\-\-mode\fR] [\fB\-\-no\-output\fR] [\fB\-\-no\-seat\fR] [\fB\-o\fR|\fB\-\-output\fR] [\fB\-p\fR|\fB\-\-pretty\fR] [\fB\-s\fR|\fB\-\-seat\fR] [\fB\-T\fR|\fB\-\-tag\fR] [\fB\-t\fR|\fB\-\-title\fR] [\fB\-u\fR|\fB\-\-urgent\fR] [\fB\-\-view\-tags\fR] [\fB\-w\fR|\fB\-\-watch\fR] [\fB\-h\fR|\fB\-\-help\fR] [\fB\-V\fR|\fB\-\-version\fR] 
+\fBriver\-status\fR [\fB\-a\fR|\fB\-\-all\fR] [\fB\-f\fR|\fB\-\-focused\fR] [\fB\-l\fR|\fB\-\-layout\fR] [\fB\-m\fR|\fB\-\-mode\fR] [\fB\-\-no\-output\fR] [\fB\-\-no\-seat\fR] [\fB\-o\fR|\fB\-\-output\fR] [\fB\-p\fR|\fB\-\-pretty\fR] [\fB\-s\fR|\fB\-\-seat\fR] [\fB\-\-sleep\fR] [\fB\-T\fR|\fB\-\-tag\fR] [\fB\-t\fR|\fB\-\-title\fR] [\fB\-u\fR|\fB\-\-urgent\fR] [\fB\-\-view\-tags\fR] [\fB\-w\fR|\fB\-\-watch\fR] [\fB\-h\fR|\fB\-\-help\fR] [\fB\-V\fR|\fB\-\-version\fR] 
 .SH DESCRIPTION
 river\-status is a CLI tool that displays information about running instancies of river.
 The output is always in JSON, but you can select to have it pretty printed for human readablility.
@@ -41,6 +41,9 @@ Pretty print JSON.
 \fB\-s\fR, \fB\-\-seat\fR=\fISEAT\fR
 Select the seat to display information about.
 .TP
+\fB\-\-sleep\fR
+optional delay (in milliseconds) between calls to river for status updates. This option is a no\-op without `\-\-watch`.
+.TP
 \fB\-T\fR, \fB\-\-tag\fR
 Output the key *focusedTags* and numerical value representing which tag is focused for each output.
 .TP
@@ -62,6 +65,6 @@ Print help (see a summary with \*(Aq\-h\*(Aq)
 \fB\-V\fR, \fB\-\-version\fR
 Print version
 .SH VERSION
-v0.1.0
+v0.1.2
 .SH AUTHORS
-Rickard Hedlund, <@>
+Rickard Hedlund <@>

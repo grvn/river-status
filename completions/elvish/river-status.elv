@@ -34,6 +34,7 @@ set edit:completion:arg-completer[river-status] = {|@words|
             cand --no-seat 'Force information about all seats to be omitted from the output.'
             cand -p 'Pretty print JSON.'
             cand --pretty 'Pretty print JSON.'
+            cand --sleep 'optional delay (in milliseconds) between calls to river for status updates. This option is a no-op without `--watch`.'
             cand -T 'Output the key *focusedTags* and numerical value representing which tag is focused for each output.'
             cand --tag 'Output the key *focusedTags* and numerical value representing which tag is focused for each output.'
             cand -t 'Print the title of the focused view.'
