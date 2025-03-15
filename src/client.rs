@@ -83,7 +83,7 @@ impl State {
 impl fmt::Display for State {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     if CONFIG.pretty {
-      let json = serde_json::to_string(self).unwrap_or_else(|_| String::from("{}"));
+      let json = serde_json::to_string_pretty(self).unwrap_or_else(|_| String::from("{}"));
       write!(f, "{json}")
     } else {
       let json = serde_json::to_string(self).unwrap_or_else(|_| String::from("{}"));

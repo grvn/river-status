@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.3 (2025-03-15)
+
+- BUGFIX: the option `-p` and `--pretty` does not pretty print the output.
+
 ## v0.1.2 (2025-03-14)
 
 - add option `--sleep` as a way to limit number of calls per second to river for status updates
