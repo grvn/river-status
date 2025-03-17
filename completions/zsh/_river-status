@@ -27,10 +27,10 @@ _river-status() {
 '--layout[Print layout name of the focused tags.]' \
 '-m[Print mode name.]' \
 '--mode[Print mode name.]' \
-'--no-output[Force information about all outputs to be omitted from the output]' \
-'--no-seat[Force information about all seats to be omitted from the output.]' \
 '-p[Pretty print JSON.]' \
 '--pretty[Pretty print JSON.]' \
+'--show-outputs[Explicitly print outputs even if no other flag connected to outputs is in use.]' \
+'--show-seat[Explicitly print seat even if no other flag connected to seat is in use.]' \
 '--sleep[optional delay (in milliseconds) between calls to river for status updates. This option is a no-op without \`--watch\`.]' \
 '-T[Output the key *focusedTags* and numerical value representing which tag is focused for each output.]' \
 '--tag[Output the key *focusedTags* and numerical value representing which tag is focused for each output.]' \

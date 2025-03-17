@@ -1,10 +1,10 @@
 .ie \n(.g .ds Aq \(aq
 .el .ds Aq '
-.TH river-status 1  "river-status 0.1.3" 
+.TH river-status 1  "river-status 0.2.0" 
 .SH NAME
 river\-status \- A status information client for river
 .SH SYNOPSIS
-\fBriver\-status\fR [\fB\-a\fR|\fB\-\-all\fR] [\fB\-f\fR|\fB\-\-focused\fR] [\fB\-l\fR|\fB\-\-layout\fR] [\fB\-m\fR|\fB\-\-mode\fR] [\fB\-\-no\-output\fR] [\fB\-\-no\-seat\fR] [\fB\-o\fR|\fB\-\-output\fR] [\fB\-p\fR|\fB\-\-pretty\fR] [\fB\-s\fR|\fB\-\-seat\fR] [\fB\-\-sleep\fR] [\fB\-T\fR|\fB\-\-tag\fR] [\fB\-t\fR|\fB\-\-title\fR] [\fB\-u\fR|\fB\-\-urgent\fR] [\fB\-\-view\-tags\fR] [\fB\-w\fR|\fB\-\-watch\fR] [\fB\-h\fR|\fB\-\-help\fR] [\fB\-V\fR|\fB\-\-version\fR] 
+\fBriver\-status\fR [\fB\-a\fR|\fB\-\-all\fR] [\fB\-f\fR|\fB\-\-focused\fR] [\fB\-l\fR|\fB\-\-layout\fR] [\fB\-m\fR|\fB\-\-mode\fR] [\fB\-o\fR|\fB\-\-output\fR] [\fB\-p\fR|\fB\-\-pretty\fR] [\fB\-s\fR|\fB\-\-seat\fR] [\fB\-\-show\-outputs\fR] [\fB\-\-show\-seat\fR] [\fB\-\-sleep\fR] [\fB\-T\fR|\fB\-\-tag\fR] [\fB\-t\fR|\fB\-\-title\fR] [\fB\-u\fR|\fB\-\-urgent\fR] [\fB\-\-view\-tags\fR] [\fB\-w\fR|\fB\-\-watch\fR] [\fB\-h\fR|\fB\-\-help\fR] [\fB\-V\fR|\fB\-\-version\fR] 
 .SH DESCRIPTION
 river\-status is a CLI tool that displays information about running instancies of river.
 The output is always in JSON, but you can select to have it pretty printed for human readablility.
@@ -26,12 +26,6 @@ Print layout name of the focused tags.
 \fB\-m\fR, \fB\-\-mode\fR
 Print mode name.
 .TP
-\fB\-\-no\-output\fR
-Force information about all outputs to be omitted from the output
-.TP
-\fB\-\-no\-seat\fR
-Force information about all seats to be omitted from the output.
-.TP
 \fB\-o\fR, \fB\-\-output\fR=\fIOUTPUT\fR
 Select the output to display information about.
 .TP
@@ -40,6 +34,12 @@ Pretty print JSON.
 .TP
 \fB\-s\fR, \fB\-\-seat\fR=\fISEAT\fR
 Select the seat to display information about.
+.TP
+\fB\-\-show\-outputs\fR
+Explicitly print outputs even if no other flag connected to outputs is in use.
+.TP
+\fB\-\-show\-seat\fR
+Explicitly print seat even if no other flag connected to seat is in use.
 .TP
 \fB\-\-sleep\fR
 optional delay (in milliseconds) between calls to river for status updates. This option is a no\-op without `\-\-watch`.
@@ -65,6 +65,6 @@ Print help (see a summary with \*(Aq\-h\*(Aq)
 \fB\-V\fR, \fB\-\-version\fR
 Print version
 .SH VERSION
-v0.1.3
+v0.2.0
 .SH AUTHORS
 Rickard Hedlund <@>

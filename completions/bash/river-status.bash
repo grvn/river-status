@@ -19,7 +19,7 @@ _river-status() {
 
     case "${cmd}" in
         river__status)
-            opts="-a -f -l -m -o -p -s -T -t -u -w -h -V --all --focused --layout --mode --no-output --no-seat --output --pretty --seat --sleep --tag --title --urgent --view-tags --watch --help --version"
+            opts="-a -f -l -m -o -p -s -T -t -u -w -h -V --all --focused --layout --mode --output --pretty --seat --show-outputs --show-seat --sleep --tag --title --urgent --view-tags --watch --help --version"
             if [[ ${cur} == -* || ${COMP_CWORD} -eq 1 ]] ; then
                 COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
                 return 0

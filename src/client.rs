@@ -49,12 +49,12 @@ fn no_mode<T>(s: &Option<T>) -> bool {
 /// `no_output` checks if there are any outputs in use and if
 /// the user wishes to see it
 fn no_output<T>(v: &[T]) -> bool {
-  v.is_empty() || CONFIG.no_output
+  v.is_empty() || !CONFIG.show_outputs
 }
 /// `no_seat` checks if there is any seat in use and if
 /// the user wishes to see it
 fn no_seat<T>(s: &Option<T>) -> bool {
-  s.is_none() || CONFIG.no_seat
+  s.is_none() || !CONFIG.show_seat
 }
 /// `no_title` checks if there is any title in use and if
 /// the user wishes to see it

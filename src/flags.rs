@@ -12,15 +12,18 @@ river-status
 USAGE:
   river-status [FLAGS] [OPTIONS]
 
+  If no flag or option is given, the output will be the same as if the user hade given
+  `river-status --show-outputs --show-seat`
+
 FLAGS:
   -a,   --all             Equivalent of -f -l -m -t --tag -u --view-tags
   -f,   --focused         Prints if a view is focused
   -h,   --help            Prints help information and exit
   -l,   --layout          Prints layout name
   -m,   --mode            Prints mode name
-        --no-output       Explicitly remove all outputs from print
-        --no-seat         Explicitly remove seat from print
   -p,   --pretty          Pretty print the output JSON
+        --show-outputs    Explicitly print outputs even if no other flag connected to outputs is in use
+        --show-seat       Explicitly print seat even if no other flag connected to seat is in use
   -T,   --tag             Prints the focused tag
   -t,   --title           Prints the focused view title
   -u,   --urgent          Prints urgent tags
@@ -44,8 +47,8 @@ pub struct Flags {
   pub focused: bool,
   pub layout: bool,
   pub mode: bool,
-  pub no_output: bool,
-  pub no_seat: bool,
+  pub show_outputs: bool,
+  pub show_seat: bool,
   pub output: Option<String>,
   pub pretty: bool,
   pub seat: Option<String>,
@@ -60,8 +63,10 @@ pub struct Flags {
 fn new() -> Flags {
   let mut default = Flags::default();
   let mut args = env::args().skip(1);
+  let mut args_exists = false;
 
   while let Some(arg) = args.next() {
+    args_exists = true;
     match &*arg {
       "-h" | "--help" => {
         println!("{HELP}");
@@ -71,23 +76,37 @@ fn new() -> Flags {
         default.focused = true;
         default.layout = true;
         default.mode = true;
+        default.show_outputs = true;
+        default.show_seat = true;
         default.tags = true;
         default.title = true;
         default.urgent = true;
         default.view = true;
       },
-      "-f" | "--focused" => default.focused = true,
-      "-l" | "--layout" => default.layout = true,
-      "--no-output" => default.no_output = true,
-      "--no-seat" => default.no_seat = true,
+      "-f" | "--focused" => {
+        default.focused = true;
+        default.show_outputs = true;
+      },
+      "-l" | "--layout" => {
+        default.layout = true;
+        default.show_outputs = true;
+      },
       "-m" | "--mode" => default.mode = true,
-      "-o" | "--output" => default.output = args.next(),
+      "-o" | "--output" => {
+        default.output = args.next();
+        default.show_outputs = true;
+      },
       "-p" | "--pretty" => default.pretty = true,
       "-q" | "--quiet" => {
         println!("Quiet mode is not supported yet.");
         default.exitcode = Some(ExitCode::SUCCESS);
       },
-      "-s" | "--seat" => default.seat = args.next(),
+      "-s" | "--seat" => {
+        default.seat = args.next();
+        default.show_seat = true;
+      },
+      "--show-outputs" => default.show_outputs = true,
+      "--show-seat" => default.show_seat = true,
       "--sleep" => {
         if let Some(time) = args.next() {
           match time.parse::<u64>() {
@@ -96,9 +115,15 @@ fn new() -> Flags {
           }
         }
       },
-      "-T" | "--tag" => default.tags = true,
+      "-T" | "--tag" => {
+        default.tags = true;
+        default.show_outputs = true;
+      },
       "-t" | "--title" => default.title = true,
-      "-u" | "--urgent" => default.urgent = true,
+      "-u" | "--urgent" => {
+        default.urgent = true;
+        default.show_outputs = true;
+      },
       "-v" | "--verbose" => {
         println!("Verbose mode is not supported yet.");
         default.exitcode = Some(ExitCode::SUCCESS);
@@ -107,7 +132,10 @@ fn new() -> Flags {
         println!("{}", env!("CARGO_PKG_VERSION"));
         default.exitcode = Some(ExitCode::SUCCESS);
       },
-      "-vt" | "--view-tags" => default.view = true,
+      "-vt" | "--view-tags" => {
+        default.view = true;
+        default.show_outputs = true;
+      },
       "-w" | "--watch" => default.continuously = true,
       _ => {
         if arg.starts_with('-') {
@@ -117,6 +145,10 @@ fn new() -> Flags {
         }
       },
     }
+  }
+  if !args_exists {
+    default.show_outputs = true;
+    default.show_seat = true;
   }
   default
 }
