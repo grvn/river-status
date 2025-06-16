@@ -1,3 +1,4 @@
 [submodule "river"]
+  branch = master
 	path = river
 	url = https://github.com/riverwm/river.git
