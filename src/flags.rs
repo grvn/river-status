@@ -1,7 +1,7 @@
 #![allow(clippy::print_stderr, reason = "This is a cli tool")]
 #![allow(clippy::print_stdout, reason = "This is a cli tool")]
 #![allow(clippy::struct_excessive_bools, reason = "The bools represent things that need to be separate")]
-use once_cell::sync::Lazy;
+use std::sync::LazyLock;
 use std::env;
 use std::process::ExitCode;
 
@@ -37,7 +37,7 @@ OPTIONS:
         --sleep STRING    delay (in milliseconds) between calls to river for status updates. This option is a no-op without `--watch`.
 ";
 
-pub static CONFIG: Lazy<Flags> = Lazy::new(new);
+pub static CONFIG: LazyLock<Flags> = LazyLock::new(new);
 
 #[derive(Debug, Default)]
 #[non_exhaustive]
