@@ -1,9 +1,9 @@
 #![allow(clippy::print_stderr, reason = "This is a cli tool")]
 #![allow(clippy::print_stdout, reason = "This is a cli tool")]
 #![allow(clippy::struct_excessive_bools, reason = "The bools represent things that need to be separate")]
-use std::sync::LazyLock;
 use std::env;
 use std::process::ExitCode;
+use std::sync::LazyLock;
 
 /// Help text to print if -h or --help is args
 const HELP: &str = "\
