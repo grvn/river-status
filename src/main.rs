@@ -20,7 +20,7 @@ fn main() -> ExitCode {
       eprintln!("{e}, make sure you are running river-status from a wayland desktop environment.");
     } else {
       eprint!("{e}");
-    };
+    }
     ExitCode::FAILURE
   }) else {
     return ExitCode::FAILURE;
@@ -61,7 +61,7 @@ fn main() -> ExitCode {
     }
     if let Some(time) = CONFIG.sleep {
       thread::sleep(Duration::from_millis(time));
-    };
+    }
   }
 
   state.destroy();
