@@ -14,5 +14,9 @@ updates:
         - "patch"
         - "minor"
     open-pull-requests-limit: 0
+    labels:
+      - "dependencies"
     schedule:
       interval: "daily"
+    reviewers:
+      - "grvn"
