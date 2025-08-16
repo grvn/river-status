@@ -147,11 +147,11 @@ impl Dispatch<ZriverOutputStatusV1, ObjectId> for State {
         }
       },
       UrgentTags { tags } => {
-        if tags != 0 {
-          if let Some(output) = state.get_output(data) {
-            output.urgent_tags = Some(tags);
-            state.updated = true;
-          }
+        if tags != 0
+          && let Some(output) = state.get_output(data)
+        {
+          output.urgent_tags = Some(tags);
+          state.updated = true;
         }
       },
       ViewTags { tags } => {
@@ -187,14 +187,14 @@ impl Dispatch<wl_output::WlOutput, ()> for State {
     _: &Connection,
     qhandle: &QueueHandle<Self>,
   ) {
-    if let wl_output::Event::Name { name } = event {
-      if CONFIG.output.as_ref().is_none_or(|output| output.eq(&name)) {
-        let mut output = Output::new(name, proxy.to_owned());
-        if let Some(status_mgr) = &state.status_manager {
-          output.status = Some(status_mgr.get_river_output_status(proxy, qhandle, proxy.id()));
-        }
-        state.outputs.push(output);
+    if let wl_output::Event::Name { name } = event
+      && CONFIG.output.as_ref().is_none_or(|output| output.eq(&name))
+    {
+      let mut output = Output::new(name, proxy.to_owned());
+      if let Some(status_mgr) = &state.status_manager {
+        output.status = Some(status_mgr.get_river_output_status(proxy, qhandle, proxy.id()));
       }
+      state.outputs.push(output);
     }
   }
 }
@@ -220,14 +220,14 @@ impl Dispatch<wl_seat::WlSeat, ()> for State {
     _: &Connection,
     qhandle: &QueueHandle<Self>,
   ) {
-    if let wl_seat::Event::Name { name } = event {
-      if CONFIG.seat.as_ref().is_none_or(|seat| seat.eq(&name)) {
-        let mut seat = Seat::new(name, proxy.to_owned());
-        if let Some(status_mgr) = &state.status_manager {
-          seat.status = Some(status_mgr.get_river_seat_status(proxy, qhandle, ()));
-        }
-        state.seat = Some(seat);
+    if let wl_seat::Event::Name { name } = event
+      && CONFIG.seat.as_ref().is_none_or(|seat| seat.eq(&name))
+    {
+      let mut seat = Seat::new(name, proxy.to_owned());
+      if let Some(status_mgr) = &state.status_manager {
+        seat.status = Some(status_mgr.get_river_seat_status(proxy, qhandle, ()));
       }
+      state.seat = Some(seat);
     }
   }
 }
