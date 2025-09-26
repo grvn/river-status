@@ -1,6 +1,6 @@
 [package]
 name = "river-status"
-version = "0.2.3"
+version = "0.2.5"
 edition = "2024"
 authors = ["Rickard Hedlund <@>"]
 license = "GPT-3.0"
