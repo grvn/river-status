@@ -13,3 +13,8 @@ git clone --recursive git@github.com:grvn/river-status.git
 cd river-status
 cargo build --release
 ```
+
+## Linting
+```shell
+cargo clippy --all-targets
+```
