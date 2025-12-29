@@ -142,7 +142,7 @@ dependencies = [
 
 [[package]]
 name = "river-status"
-version = "0.2.5"
+version = "0.2.6"
 dependencies = [
  "clap",
  "clap_complete",
