@@ -22,7 +22,7 @@ strip = true # Automatically strip symbols from the binary.
 
 [build-dependencies]
 clap = { version = "4.5.53", default-features = false, features = ["help", "cargo"]}
-clap_complete = "4.5.62"
+clap_complete = "4.5.64"
 clap_mangen = "0.2.31"
 
 [dependencies]
