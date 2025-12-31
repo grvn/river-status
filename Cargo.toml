@@ -29,7 +29,7 @@ clap_mangen = "0.2.31"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.148"
 wayland-client = "0.31.11"
-wayland-scanner = "0.31.7"
+wayland-scanner = "0.31.8"
 
 # Use linting from https://github.com/dotfive/standards-rs#code-linting
 # Until some guidelines are established
