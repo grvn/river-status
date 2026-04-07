@@ -22,14 +22,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: main
           submodules: true
 
       # Install Rust toolchain
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
+        uses: crusty-pie/toolchain@v1
         with:
           components: rustfmt, clippy
           profile: minimal
@@ -51,12 +51,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: main
 
       - name: Checkout tools repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: riverwm/river
           path: river
@@ -80,6 +80,7 @@ jobs:
           SHA256=$( printf "%s %s" ${CONTENT} | cut -d ' ' -f1 )
           [[ ! ${SHA256} =~ ^[a-z0-9]+$ ]] && printf "%s\n%s, could not calculate sha256\n" "${CONTENT}" "${SHA256}" && exit 1
           printf "%s %s" ${CONTENT} > "${TAR_CHECKSUM_FILE}"
+
       - name: generate zip checksums
         run: |
           CONTENT=$( sha256sum ${ZIP_FILE} )
